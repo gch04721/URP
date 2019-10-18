@@ -27,5 +27,10 @@ with open('nodeDataQueue.txt', 'r') as f:
     plt.plot(range(0, 3600), raw[3])
     plt.show()
 
+    plt.xlabel('time slot')
+    plt.ylabel('node dataqueue, 1 = 100Kbit')
+    plt.plot(range(0, 3600), raw[2])
+    plt.show()
+
 with open('processSize.txt', 'r') as f:
     pass
