@@ -28,16 +28,17 @@ Node::Node(double x, double y, int no, bool isCam) {
 void Node::setInputSize(int size) {
 	this->inputSize = (double)size / 10.0;
 	cout << this->inputSize << endl;
-	if (this->inputSize > 2.0) {
+	if (this->inputSize > 2.3) {
 		if (this->isCam) {
-			if (this->inputSize > 3.0) {
-				this->inputSize = 3.0;
+			if (this->inputSize > 2.5) {
+				this->inputSize = 2.5;
 			}
 			this->inputSize *= 10;
+			this->inputSize += 6;
 			//this->inputSize += 20;
 		}
 		else {
-			this->inputSize = 2.5;
+			this->inputSize = 1.2;
 		}
 	}
 }

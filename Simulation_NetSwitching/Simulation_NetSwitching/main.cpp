@@ -25,7 +25,7 @@ int main() {
 
 	// poisson distribution을 따르는 난수 생성기
 	std::default_random_engine gen;
-	std::poisson_distribution<int> distribution(15);
+	std::poisson_distribution<int> distribution(12);
 	
 	vector<Node*> nodeList;
 	vector<Edge*> edgeList;
