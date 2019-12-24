@@ -17,6 +17,7 @@ class Node:
         self.isReady = False
 
         self.connectedEdge = None
+        self.PORT = 8889
     
     def setIP(self, IP):
         self.IP = IP
@@ -49,7 +50,7 @@ class Node:
             if self.dataQueue > 0.6:
                 a = self.dataQueue / 0.6
                 b = self.dataQueue % 0.6
-                if a > 2:
+                if a >= 2:
                     self.processSize = 1.2
                 else:
                     if b > 0.45:
@@ -101,7 +102,7 @@ class Node:
             if prefer.edge == self.connectedEdge:
                 self.preferenceList.remove(prefer)
                 break
-            
+
         self.connectedEdge = Edge.Edge('')
         self.connectType = 0
         self.connectedPreference = 0.0

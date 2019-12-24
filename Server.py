@@ -73,13 +73,13 @@ def socket_iot():
 def init():
     for edge in edgeNameList:
         edge__ = Edge.Edge(edge)
-        #edge__.setReady(True)
+        edge__.setReady(True)
         edgeList.append(edge__)
         
     
     for node in nodeNameList:
         node__= Node.Node(node)
-        #node__.setReady(True)
+        node__.setReady(True)
         nodeList.append(node__)
 
     edgeList[0].setIP("192.168.0.2")
@@ -88,55 +88,58 @@ def init():
     edgeList[3].setIP("192.168.0.6")
     edgeList[4].setIP("192.168.0.11")
 
-    nodeList[0].setIP('')
-    nodeList[0].setMAC('')
+    nodeList[0].setIP('192.168.0.10')
+    nodeList[0].setMAC('24-6F-28-25-23-26')
 
-    nodeList[1].setIP('')
-    nodeList[1].setMAC('')
+    nodeList[1].setIP('192.168.0.15')
+    nodeList[1].setMAC('24-6F-28-25-22-36')
 
-    nodeList[2].setIP('')
-    nodeList[2].setMAC('')
+    nodeList[2].setIP('192.168.0.14')
+    nodeList[2].setMAC('24-6F-28-25-22-90')
 
-    nodeList[3].setIP('')
-    nodeList[3].setMAC('')
+    nodeList[3].setIP('192.168.0.17')
+    nodeList[3].setMAC('24-6F-28-25-22-2E')
 
-    nodeList[4].setIP('')
-    nodeList[4].setMAC('')
+    nodeList[4].setIP('192.168.0.18')
+    nodeList[4].setMAC('24-6F-28-25-21-72')
     
-    nodeList[5].setIP('')
-    nodeList[5].setMAC('')
+    nodeList[5].setIP('192.168.0.19')
+    nodeList[5].setMAC('24-6F-28-25-21-CE')
 
-    nodeList[6].setIP('')
-    nodeList[6].setMAC('')
+    nodeList[6].setIP('192.168.0.20')
+    nodeList[6].setMAC('24-6F-28-25-22-4A')
 
-    nodeList[7].setIP('')
-    nodeList[7].setMAC('')
+    nodeList[7].setIP('192.168.0.21')
+    nodeList[7].setMAC('24-6F-28-25-22-02')
 
-    nodeList[8].setIP('')
-    nodeList[8].setMAC('')
+    nodeList[8].setIP('192.168.0.22')
+    nodeList[8].setMAC('24-6F-28-25-22-92')
 
-    nodeList[9].setIP('')
-    nodeList[9].setMAC('')
+    nodeList[9].setIP('192.168.0.23')
+    nodeList[9].setMAC('24-6F-28-25-21-C6')
 
-    nodeList[10].setIP('')
+    nodeList[10].setIP('192.168.0.9')
     nodeList[10].setMAC('')
 
-    nodeList[11].setIP('')
+    nodeList[11].setIP('192.168.0.12')
     nodeList[11].setMAC('')
 
-    nodeList[12].setIP('')
+    nodeList[12].setIP('192.168.0.13')
     nodeList[12].setMAC('')
 
-    nodeList[13].setIP('')
+    nodeList[13].setIP('192.168.0.4')
     nodeList[13].setMAC('')
 
-    nodeList[14].setIP('')
+    nodeList[14].setIP('192.168.0.7')
     nodeList[14].setMAC('')
 
 def scheduling():
+    # for test
     for node in nodeList:
         node.setData(10.0)
-    
+    nodeList[4].setData(80.0)
+    checkIsTrue()
+
     for node in nodeList:
         for edge in edgeList:
             checkBLE = True
@@ -159,7 +162,7 @@ def scheduling():
     for edge in edgeList:
         print(edge.name , "의 연결 노드 :")
         for conn in edge.connectedList:
-            print(conn.node.name)
+            print(conn.node.name,',', conn.node.connectType)
     
     sock_edge = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock_iot = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -177,6 +180,7 @@ def scheduling():
             data += ','
         data = data[:-1]
         sock_edge.sendto(data.encode(), (edge.IP, edge.PORT))
+        edge.setReady(False)
 
     for node in nodeList:
         data = ''
@@ -188,6 +192,7 @@ def scheduling():
         elif node.connectType == 2:
             data += '_wifi'
         sock_iot.sendto(data.encode(), (node.IP, node.PORT))
+        node.setReady(False)
 
     threading.Timer(5 * 60, scheduling)
 
@@ -217,15 +222,10 @@ def __main__():
     init()
     socket_edge_thread = threading.Thread(target=socket_edge, args= ())
     socket_iot_thread = threading.Thread(target= socket_iot, args= ())
-    #checkThread = threading.Thread(target=checkIsTrue, args=())
 
     socket_edge_thread.start()
     socket_iot_thread.start()
-    #checkThread.start()
 
-    scheduling_start = checkIsTrue()
-
-    if scheduling_start == True:
-        scheduling()
+    scheduling()
 
 __main__()

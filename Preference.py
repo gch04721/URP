@@ -19,14 +19,20 @@ class Preference:
         if q_wifi < 0.0:
             q_wifi = 0.0
         
-        v = 3.8
+        v = 0.3
         __preference = p_wifi + v * q_wifi
         self.type = 2
 
         if checkBLE:
             self.node.connectType = 1
             self.node.getProcessSize()
-            p_ble = 130.0
+            if self.node.processSize == 1.2:
+                p_ble = 260.0
+            elif 0.6 < self.node.processSize < 1.2:
+                p_ble = 260.0
+            elif self.node.processSize <= 0.6:
+                p_ble = 130.0
+
             q_ble = self.node.dataQueue - self.node.processSize
 
             if q_ble < 0.0:

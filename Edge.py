@@ -1,6 +1,6 @@
 import Connection
 import socket
-max_queue_size = 40.0
+max_queue_size = 50.0
 class Edge:
     def __init__(self, edge_name):
         self.name = edge_name
@@ -9,6 +9,7 @@ class Edge:
         self.isOvered = False
         self.connectedList= [] # class Connection
         self.isReady = False
+        self.isWifi = False
 
     def setIP(self, IP):
         self.IP = IP
@@ -48,25 +49,39 @@ class Edge:
         return self.connectedList[leastIdx].node
     
     def disConnectNode(self, node):
+        if node.connectType == 2:
+            self.isWifi = False
+
         for conn in self.connectedList:
             if conn.node == node:
                 self.connectedList.remove(conn)
-                break
+            else:
+                if conn.node.connectType == 2:
+                    self.isWifi = True
+        
         node.getProcessSize()
         self.dataQueue -= node.processSize
 
         if self.dataQueue < 0.0:
             self.dataQueue = 0.0
-        if self.dataQueue > max_queue_size:
+        ratio = 0.2
+        if self.isWifi == True:
+            ratio = 0.8
+        if self.dataQueue > (max_queue_size * ratio):
             self.isOvered = True
         else:
             self.isOvered = False
 
-    def newConnect(self, node, type):
-        self.connectedList.append(Connection.Connection(node, type))
+    def newConnect(self, node, _type):
+        if _type == 2:
+            self.isWifi = True
+        self.connectedList.append(Connection.Connection(node, _type))
         node.getProcessSize()
         self.dataQueue += node.processSize
-        if self.dataQueue > max_queue_size: 
+        ratio = 0.2
+        if self.isWifi == True:
+            ratio = 0.8
+        if self.dataQueue > (max_queue_size * ratio):
             self.isOvered = True
         else:
             self.isOvered = False
