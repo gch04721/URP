@@ -74,7 +74,7 @@ def socket_iot():
 def init():
     for edge in edgeNameList:
         edge__ = Edge.Edge(edge)
-        edge__.setReady(True)
+        #edge__.setReady(True)
         edgeList.append(edge__)
         
     
@@ -120,19 +120,19 @@ def init():
     nodeList[9].setMAC('24:6F:28:25:21:C6')
 
     nodeList[10].setIP('192.168.0.9')
-    nodeList[10].setMAC('')
+    nodeList[10].setMAC('B8:27:EB:25:06:42')
 
     nodeList[11].setIP('192.168.0.12')
-    nodeList[11].setMAC('')
+    nodeList[11].setMAC('B8:27:EB:5E:F7:42')
 
     nodeList[12].setIP('192.168.0.13')
-    nodeList[12].setMAC('')
+    nodeList[12].setMAC('B8:27:EB:7C:87:60')
 
     nodeList[13].setIP('192.168.0.4')
-    nodeList[13].setMAC('')
+    nodeList[13].setMAC('B8:27:EB:9D:BF:80')
 
     nodeList[14].setIP('192.168.0.7')
-    nodeList[14].setMAC('')
+    nodeList[14].setMAC('B8:27:EB:B8:7E:66')
 
 def getData():
     while True:
@@ -152,10 +152,10 @@ def scheduling():
     
     checkIsTrue()
 
-    getData()
-    # for node in nodeList:
-    #     node.setData(10.0)
-    # nodeList[4].setData(49)
+    #getData()
+    for node in nodeList:
+        node.setData(10.0)
+    nodeList[4].setData(49)
 
     for node in nodeList:
         for edge in edgeList:
