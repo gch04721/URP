@@ -3,7 +3,7 @@ import socket
 import Node
 import Edge
 import Preference
-
+from time import sleep
 time_limit = 5
 current_time = 0
 
@@ -42,6 +42,10 @@ def socket_edge():
                 for edge in edgeList:
                     if edge.IP == sender[0]:
                         edge.setReady(True)
+                        for conn in edge.connectedList:
+                            conn.node.setReady(False)
+                            conn.node.timeOver()
+                        edge.timeOver()
 
 def socket_iot():
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -58,7 +62,7 @@ def socket_iot():
             print('start received : ' , sender[0], 'from iot')
             for node in nodeList:
                 if node.IP == sender[0]:
-                    node.setReady = True
+                    node.setReady(True)
                     node.sendAck(sender)
         else:
             split_data = recv_data.split(',')
@@ -68,6 +72,7 @@ def socket_iot():
                 for node in nodeList:
                     if node.IP == sender[0]:
                         node.setData(size)
+                        node.setReady(True)
                         node.sendAck(sender)
 
 
@@ -89,6 +94,7 @@ def init():
     edgeList[3].setIP("192.168.0.6")
     edgeList[4].setIP("192.168.0.11")
 
+    # arduino : 10
     nodeList[0].setIP('192.168.0.10')
     nodeList[0].setMAC('24:6F:28:25:23:26')
 
@@ -116,6 +122,7 @@ def init():
     nodeList[8].setIP('192.168.0.22')
     nodeList[8].setMAC('24:6F:28:25:22:92')
 
+    # pi zero w: 5
     nodeList[9].setIP('192.168.0.23')
     nodeList[9].setMAC('24:6F:28:25:21:C6')
 
@@ -144,6 +151,8 @@ def getData():
 
         if check == True:
             break
+        else:
+            sleep(5)
 
 
 
@@ -152,10 +161,10 @@ def scheduling():
     
     checkIsTrue()
 
-    #getData()
-    for node in nodeList:
-        node.setData(10.0)
-    nodeList[4].setData(49)
+    getData()
+    # for node in nodeList:
+    #     node.setData(10.0)
+    # nodeList[4].setData(49)
 
     for node in nodeList:
         for edge in edgeList:
