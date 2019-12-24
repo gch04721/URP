@@ -14,12 +14,12 @@ class Preference:
         self.node.getProcessSize()
 
         p_wifi = 270.0
-        q_wifi = self.node.dataQueue - self.node.processSize
+        q_wifi = self.node.dataQueue *(self.node.inputSize - self.node.processSize)
 
         if q_wifi < 0.0:
             q_wifi = 0.0
         
-        v = 0.3
+        v = 0.0044
         __preference = p_wifi + v * q_wifi
         self.type = 2
 
@@ -28,12 +28,10 @@ class Preference:
             self.node.getProcessSize()
             if self.node.processSize == 1.2:
                 p_ble = 260.0
-            elif 0.6 < self.node.processSize < 1.2:
-                p_ble = 260.0
             elif self.node.processSize <= 0.6:
                 p_ble = 130.0
 
-            q_ble = self.node.dataQueue - self.node.processSize
+            q_ble = self.node.dataQueue * (self.node.dataQueue - self.node.processSize)
 
             if q_ble < 0.0:
                 q_ble = 0.0

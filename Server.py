@@ -62,12 +62,13 @@ def socket_iot():
                     node.sendAck(sender)
         else:
             split_data = recv_data.split(',')
-            if split_data[0] == "queuesize":
+            if split_data[0] == "queue_info":
                 # receive using queue size for scheduling
                 size = int(split_data[1])
                 for node in nodeList:
                     if node.IP == sender[0]:
                         node.setData(size)
+                        node.sendAck(sender)
 
 
 def init():
@@ -89,34 +90,34 @@ def init():
     edgeList[4].setIP("192.168.0.11")
 
     nodeList[0].setIP('192.168.0.10')
-    nodeList[0].setMAC('24-6F-28-25-23-26')
+    nodeList[0].setMAC('24:6F:28:25:23:26')
 
     nodeList[1].setIP('192.168.0.15')
-    nodeList[1].setMAC('24-6F-28-25-22-36')
+    nodeList[1].setMAC('24:6F:28:25:22:36')
 
     nodeList[2].setIP('192.168.0.14')
-    nodeList[2].setMAC('24-6F-28-25-22-90')
+    nodeList[2].setMAC('24:6F:28:25:22:8A')
 
     nodeList[3].setIP('192.168.0.17')
-    nodeList[3].setMAC('24-6F-28-25-22-2E')
+    nodeList[3].setMAC('24:6F:28:25:22:2E')
 
     nodeList[4].setIP('192.168.0.18')
-    nodeList[4].setMAC('24-6F-28-25-21-72')
+    nodeList[4].setMAC('24:6F:28:25:21:72')
     
     nodeList[5].setIP('192.168.0.19')
-    nodeList[5].setMAC('24-6F-28-25-21-CE')
+    nodeList[5].setMAC('24:6F:28:25:21:CE')
 
     nodeList[6].setIP('192.168.0.20')
-    nodeList[6].setMAC('24-6F-28-25-22-4A')
+    nodeList[6].setMAC('24:6F:28:25:22:4A')
 
     nodeList[7].setIP('192.168.0.21')
-    nodeList[7].setMAC('24-6F-28-25-22-02')
+    nodeList[7].setMAC('24:6F:28:25:22:02')
 
     nodeList[8].setIP('192.168.0.22')
-    nodeList[8].setMAC('24-6F-28-25-22-92')
+    nodeList[8].setMAC('24:6F:28:25:22:92')
 
     nodeList[9].setIP('192.168.0.23')
-    nodeList[9].setMAC('24-6F-28-25-21-C6')
+    nodeList[9].setMAC('24:6F:28:25:21:C6')
 
     nodeList[10].setIP('192.168.0.9')
     nodeList[10].setMAC('')
@@ -133,12 +134,28 @@ def init():
     nodeList[14].setIP('192.168.0.7')
     nodeList[14].setMAC('')
 
+def getData():
+    while True:
+        check = True
+        for node in nodeList:
+            if node.getData == False:
+                node.sendQueueInfo()
+                check = False
+
+        if check == True:
+            break
+
+
+
 def scheduling():
     # for test
-    for node in nodeList:
-        node.setData(10.0)
-    nodeList[4].setData(80.0)
+    
     checkIsTrue()
+
+    getData()
+    # for node in nodeList:
+    #     node.setData(10.0)
+    # nodeList[4].setData(49)
 
     for node in nodeList:
         for edge in edgeList:

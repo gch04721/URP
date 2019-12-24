@@ -7,6 +7,7 @@ class Node:
 
         self.dataQueue = 0.0 # IoT node에 남아있는 Queue 정보
         self.processSize = 0.0 # 이번 Timeslot 에 보낼 size
+        self.inputSize = 0.0
 
         self.connectType = 0
         self.connectedPreference = 0.0
@@ -15,6 +16,7 @@ class Node:
 
         self.isConnected = False
         self.isReady = False
+        self.getData = False
 
         self.connectedEdge = None
         self.PORT = 8889
@@ -29,13 +31,20 @@ class Node:
         self.isReady = ready    
     
     def setData(self, inputSize):
-        self.dataQueue = inputSize
+        self.inputSize = inputSize
+        self.dataQueue += self.inputSize
+        self.getData = True
     
     def sendAck(self, sender):
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        sock.sendto("ack".encode(), sender)
+        sock.sendto("ack".encode(), (self.IP, self.PORT))
         sock.close()
-    
+
+    def sendQueueInfo(self):
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        sock.sendto("queue_info".encode(), (self.IP, self.PORT))
+        sock.close()
+        
     def sendScheduleResult(self):
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sock.sendto("ack".encode(), ('', ''))
@@ -50,18 +59,18 @@ class Node:
             if self.dataQueue > 0.6:
                 a = self.dataQueue / 0.6
                 b = self.dataQueue % 0.6
-                if a >= 2:
+                if a >= 2.0:
                     self.processSize = 1.2
                 else:
-                    if b > 0.45:
+                    if b> 0.45:
                         self.processSize = 0.6 + b
-                    else :
+                    else:
                         self.processSize = 0.6
             else:
                 if self.dataQueue > 0.45:
                     self.processSize = self.dataQueue
                 else:
-                    self.processSize = 0.0
+                    self.processSize = 0
         elif self.connectType == 2:
             if self.dataQueue > 30.0:
                 self.processSize = 30.0
@@ -109,9 +118,11 @@ class Node:
         self.isConnected = False
     
     def timeOver(self):
+        self.dataQueue -= self.processSize
         self.processSize()
         self.preferenceList.clear()
         self.isConnected = False
         self.connectType =0
         self.connectedPreference =0.0
         self.connectedEdge = Edge.Edge('')
+        

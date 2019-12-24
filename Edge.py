@@ -1,6 +1,6 @@
 import Connection
 import socket
-max_queue_size = 50.0
+max_queue_size = 40.0
 class Edge:
     def __init__(self, edge_name):
         self.name = edge_name
