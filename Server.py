@@ -54,9 +54,10 @@ def socket_iot():
     sock.bind(recv_addr)
 
     while True:
-        data_size = 256
+        data_size = 512
         data, sender = sock.recvfrom(data_size)
-
+        print(data)
+        print(sender)
         recv_data = data.decode()
         if recv_data == "start":
             print('start received : ' , sender[0], 'from iot')
@@ -65,27 +66,31 @@ def socket_iot():
                     node.setReady(True)
                     node.sendAck(sender)
         else:
+            print(recv_data)
             split_data = recv_data.split(',')
+            print(split_data)
             if split_data[0] == "queue_info":
                 # receive using queue size for scheduling
-                size = int(split_data[1])
+                size = float(split_data[1])
                 for node in nodeList:
                     if node.IP == sender[0]:
                         node.setData(size)
                         node.setReady(True)
                         node.sendAck(sender)
+                        print(size)
 
 
 def init():
     for edge in edgeNameList:
         edge__ = Edge.Edge(edge)
         #edge__.setReady(True)
+        edge__.setReady(False)
         edgeList.append(edge__)
-        
     
     for node in nodeNameList:
         node__= Node.Node(node)
         node__.setReady(True)
+        #node__.setReady(False)
         nodeList.append(node__)
 
     edgeList[0].setIP("192.168.0.2")
@@ -161,10 +166,10 @@ def scheduling():
     
     checkIsTrue()
 
-    getData()
-    # for node in nodeList:
-    #     node.setData(10.0)
-    # nodeList[4].setData(49)
+    #getData()
+    for node in nodeList:
+        node.setData(10.0)
+    nodeList[4].setData(49)
 
     for node in nodeList:
         for edge in edgeList:
@@ -205,6 +210,7 @@ def scheduling():
                 data += '_wifi'
             data += ','
         data = data[:-1]
+        print(data)
         sock_edge.sendto(data.encode(), (edge.IP, edge.PORT))
         edge.setReady(False)
 
@@ -213,12 +219,25 @@ def scheduling():
         data += node.connectedEdge.name
         if node.connectType == 0:
             data += '_none'
+
         elif node.connectType == 1:
             data += '_ble'
+            data += ','
+            data += str(node.processSize)
+            data += ','
+            if node.processSize > 0.6:
+                data += '2'
+            else:
+                data += '1'
+
         elif node.connectType == 2:
             data += '_wifi'
+            data += ','
+            data += str(node.processSize)
+        
         sock_iot.sendto(data.encode(), (node.IP, node.PORT))
         node.setReady(False)
+        node.getData = False
 
     threading.Timer(5 * 60, scheduling)
 
