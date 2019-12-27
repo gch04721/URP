@@ -26,7 +26,7 @@ class Preference:
         if checkBLE:
             self.node.connectType = 1
             self.node.getProcessSize()
-            if self.node.processSize == 1.2:
+            if 0.6 <= self.node.processSize <= 1.2:
                 p_ble = 260.0
             elif self.node.processSize <= 0.6:
                 p_ble = 130.0

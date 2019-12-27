@@ -27,10 +27,10 @@ def socket_edge():
         data, sender = sock.recvfrom(data_size)
 
         recv_data = data.decode()
-
+        print('data received : ' , sender[0], sender[1], "from edge", ": ", recv_data)
         if recv_data == "start":
             # initialize
-            print('start received : ' , sender[0], sender[1], "from edge")
+            
             for edge in edgeList:
                 if edge.IP == sender[0]:
                     edge.setReady(True)
@@ -127,10 +127,10 @@ def init():
     nodeList[8].setIP('192.168.0.22')
     nodeList[8].setMAC('24:6F:28:25:22:92')
 
-    # pi zero w: 5
     nodeList[9].setIP('192.168.0.23')
     nodeList[9].setMAC('24:6F:28:25:21:C6')
 
+    # pi zero w: 5
     nodeList[10].setIP('192.168.0.9')
     nodeList[10].setMAC('B8:27:EB:25:06:42')
 
@@ -148,13 +148,16 @@ def init():
 
 def getData():
     while True:
-        check = True
+        count = 0
         for node in nodeList:
-            if node.getData == False:
-                node.sendQueueInfo()
-                check = False
+            if node.name in ('node11', 'node12', 'node13', 'node14', 'node15'):
+                if node.getData == False:
+                    node.sendQueueInfo()
+                    
+                else:
+                    count += 1
 
-        if check == True:
+        if count == 5:
             break
         else:
             sleep(5)
@@ -166,10 +169,10 @@ def scheduling():
     
     checkIsTrue()
 
-    #getData()
-    for node in nodeList:
-        node.setData(10.0)
-    nodeList[4].setData(49)
+    getData()
+    # for node in nodeList:
+    #     node.setData(10.0)
+    # nodeList[4].setData(49)
 
     for node in nodeList:
         for edge in edgeList:
@@ -213,6 +216,7 @@ def scheduling():
         print(data)
         sock_edge.sendto(data.encode(), (edge.IP, edge.PORT))
         edge.setReady(False)
+    
 
     for node in nodeList:
         data = ''
