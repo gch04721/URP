@@ -15,6 +15,16 @@ nodeList=[]
 
 scheduling_start = False
 
+import csv
+
+log_queue = open('log_queue.csv', 'w', newline ='', encoding='euc-kr')
+log_power = open('log_power.csv', 'w', newline ='', encoding='euc-kr')
+
+log_queue_writer = csv.DictWriter(log_queue, fieldnames = nodeNameList)
+log_power_writer = csv.DictWriter(log_power, fieldnames = nodeNameList)
+log_queue_writer.writeheader()
+log_power_writer.writeheader()
+
 def socket_edge():
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
@@ -192,12 +202,14 @@ def scheduling():
         sock_edge.sendto(data.encode(), (edge.IP, edge.PORT))
         edge.setReady(False)
     
-
+    node_power = {str() : float()}
+    node_queue = {str() : float()}
     for node in nodeList:
         data = ''
         data += node.connectedEdge.name
         if node.connectType == 0:
             data += '_none'
+            node_power[node.name] = 0.0
 
         elif node.connectType == 1:
             data += '_ble'
@@ -206,18 +218,25 @@ def scheduling():
             data += ','
             if node.processSize > 0.6:
                 data += '2'
+                node_power[node.name] = 260.0
             else:
                 data += '1'
+                node_power[node.name] = 130.0
 
         elif node.connectType == 2:
             data += '_wifi'
             data += ','
             data += str(node.processSize)
-        
+            node_power[node.name] = 270.0
+
+        node_queue[node.name] = (node.dataQueue - node.processSize)
+
         sock_iot.sendto(data.encode(), (node.IP, node.PORT))
         node.setReady(False)
         node.getData = False
 
+    log_queue_writer.writerow(node_queue)
+    log_power_writer.writerow(node_power)
     threading.Timer(5 * 60, scheduling)
 
 def isFinished():
