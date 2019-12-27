@@ -7,11 +7,10 @@ from time import sleep
 time_limit = 5
 current_time = 0
 
-edgeNameList = ('edge1', 'edge2', 'edge3', 'edge4', 'edge5')
+edgeNameList = ('edge1', 'edge2')
 edgeList=[]
 
-nodeNameList = ('node1', 'node2', 'node3', 'node4', 'node5', 'node6', 'node7', 'node8', \
-            'node9', 'node10', 'node11', 'node12', 'node13', 'node14', 'node15')
+nodeNameList = ('node1', 'node2', 'node3', 'node4', 'node5', 'node6', 'node7', 'node8')
 nodeList=[]
 
 scheduling_start = False
@@ -89,68 +88,44 @@ def init():
     
     for node in nodeNameList:
         node__= Node.Node(node)
-        node__.setReady(True)
-        #node__.setReady(False)
+        #node__.setReady(True)
+        node__.setReady(False)
         nodeList.append(node__)
 
-    edgeList[0].setIP("192.168.0.2")
-    edgeList[1].setIP("192.168.0.3")
-    edgeList[2].setIP("192.168.0.5")
-    edgeList[3].setIP("192.168.0.6")
-    edgeList[4].setIP("192.168.0.11")
+    edgeList[0].setIP("192.168.0.3")
+    edgeList[1].setIP("192.168.0.5")
 
-    # arduino : 10
-    nodeList[0].setIP('192.168.0.10')
-    nodeList[0].setMAC('24:6F:28:25:23:26')
+    # pi zero w: 5 == arduino 대체
+    nodeList[0].setIP('192.168.0.9')
+    nodeList[0].setMAC('B8:27:EB:25:06:42')
 
-    nodeList[1].setIP('192.168.0.15')
-    nodeList[1].setMAC('24:6F:28:25:22:36')
+    nodeList[1].setIP('192.168.0.12')
+    nodeList[1].setMAC('B8:27:EB:5E:F7:42')
 
-    nodeList[2].setIP('192.168.0.14')
-    nodeList[2].setMAC('24:6F:28:25:22:8A')
+    nodeList[2].setIP('192.168.0.13')
+    nodeList[2].setMAC('B8:27:EB:7C:87:60')
 
-    nodeList[3].setIP('192.168.0.17')
-    nodeList[3].setMAC('24:6F:28:25:22:2E')
+    nodeList[3].setIP('192.168.0.4')
+    nodeList[3].setMAC('B8:27:EB:9D:BF:80')
 
-    nodeList[4].setIP('192.168.0.18')
-    nodeList[4].setMAC('24:6F:28:25:21:72')
-    
-    nodeList[5].setIP('192.168.0.19')
-    nodeList[5].setMAC('24:6F:28:25:21:CE')
+    nodeList[4].setIP('192.168.0.7')
+    nodeList[4].setMAC('B8:27:EB:B8:7E:66')
 
-    nodeList[6].setIP('192.168.0.20')
-    nodeList[6].setMAC('24:6F:28:25:22:4A')
+    # 기존 Edge 1,4,5 : rpi zero w 대체, busty 노드
+    nodeList[5].setIP('192.168.0.2')
+    nodeList[5].setMAC('B8:27:EB:C3:75:5C')
 
-    nodeList[7].setIP('192.168.0.21')
-    nodeList[7].setMAC('24:6F:28:25:22:02')
+    nodeList[6].setIP('192.168.0.6')
+    nodeList[6].setMAC('B8:27:EB:6D:FE:49')
 
-    nodeList[8].setIP('192.168.0.22')
-    nodeList[8].setMAC('24:6F:28:25:22:92')
-
-    nodeList[9].setIP('192.168.0.23')
-    nodeList[9].setMAC('24:6F:28:25:21:C6')
-
-    # pi zero w: 5
-    nodeList[10].setIP('192.168.0.9')
-    nodeList[10].setMAC('B8:27:EB:25:06:42')
-
-    nodeList[11].setIP('192.168.0.12')
-    nodeList[11].setMAC('B8:27:EB:5E:F7:42')
-
-    nodeList[12].setIP('192.168.0.13')
-    nodeList[12].setMAC('B8:27:EB:7C:87:60')
-
-    nodeList[13].setIP('192.168.0.4')
-    nodeList[13].setMAC('B8:27:EB:9D:BF:80')
-
-    nodeList[14].setIP('192.168.0.7')
-    nodeList[14].setMAC('B8:27:EB:B8:7E:66')
+    nodeList[7].setIP('192.168.0.11')
+    nodeList[7].setMAC('B8:27:EB:5A:58:F7')
 
 def getData():
     while True:
         count = 0
         for node in nodeList:
-            if node.name in ('node11', 'node12', 'node13', 'node14', 'node15'):
+            if node.name in ('node1', 'node2', 'node3', 'node4', 'node5'):
                 if node.getData == False:
                     node.sendQueueInfo()
                     

@@ -64,7 +64,7 @@ class Edge:
 
         if self.dataQueue < 0.0:
             self.dataQueue = 0.0
-        ratio = 0.2
+        ratio = 0.14
         if self.isWifi == True:
             ratio = 0.8
         if self.dataQueue > (max_queue_size * ratio):
